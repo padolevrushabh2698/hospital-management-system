@@ -14,16 +14,16 @@ public class SecurityConfig {
 	
 	
 	
-//	@PostMapping("/register")
-//	public ResponseEntity<ApiResponse<Object>> registerUser( @Valid @RequestBody RegisterRequestDTO request){
-//		
-//		UserResponseDTO response=authservice.registerUser(request);
-//		
-//		return ResponseEntity.ok(ApiResponse.builder()
-//				.success(true)
-//				.message("user registration sucessful")
-//				.data(response)
-//				.build()
-//				);
-//	}
+	@PostMapping("/register")
+	public ResponseEntity<ApiResponse<Object>> registerUser( @Valid @RequestBody RegisterRequestDTO request){
+		
+		//UserResponseDTO response=authservice.registerUser(request);
+		
+		return ResponseEntity.ok(ApiResponse.builder()
+				.success(true)
+				.message("user registration sucessful")
+			//	.data(response)
+				.build()
+				);
+	}
 }
