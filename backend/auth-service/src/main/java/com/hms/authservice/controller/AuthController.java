@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.hms.authservice.DTO.LoginRequestDTO;
 import com.hms.authservice.DTO.RegisterRequestDTO;
 import com.hms.authservice.DTO.UserResponseDTO;
 import com.hms.authservice.response.ApiResponse;
@@ -80,6 +82,20 @@ public class AuthController {
 				.build()
 				);
 		
+	}
+	
+	@PostMapping("/login")
+	public ResponseEntity<ApiResponse> login(@RequestBody LoginRequestDTO request){
+		 System.out.println("LOGIN API HIT ");
+		
+		String token=authservice.login(request);
+		
+		return ResponseEntity.ok(ApiResponse.builder()
+				.success(true)
+				.message("LOGIN SUCCESSFUL")
+				.data(token)
+				.build()
+				);
 	}
 
 }

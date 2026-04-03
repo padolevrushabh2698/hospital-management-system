@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.hms.authservice.DTO.LoginRequestDTO;
 import com.hms.authservice.DTO.RegisterRequestDTO;
 import com.hms.authservice.DTO.UserResponseDTO;
 import com.hms.authservice.entity.User;
@@ -18,6 +19,7 @@ import com.hms.authservice.exception.DuplicateResourceException;
 import com.hms.authservice.exception.ResourceNotFoundException;
 import com.hms.authservice.mapper.UserMapper;
 import com.hms.authservice.repository.UserRepository;
+import com.hms.authservice.security.JwtUtil;
 import com.hms.authservice.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImpl implements AuthService {
 	private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 	private final UserRepository userRepository;
-	
+	private final JwtUtil jwtutil;
 
 	@Override
 	public UserResponseDTO registerUser(RegisterRequestDTO request) {
@@ -92,6 +94,22 @@ public class AuthServiceImpl implements AuthService {
 		Page<User> userPage=userRepository.findAll(pageable);
 		
 		return userPage.map(UserMapper::mapToResponse);
+	}
+
+
+	@Override
+	public String login(LoginRequestDTO request) {
+		
+		log.info("Login attempt for username:", request.getUsername());
+		
+		User user=userRepository.findByUsername(request.getUsername()).orElseThrow(()->new ResourceNotFoundException("User Not Found With Email:"+request.getUsername()));
+		
+		if(!user.getPassword().equals(request.getPassword())) {
+			throw new RuntimeException("INVALID CREDENTIAL");
+		}
+		String token=jwtutil.generateToken(user.getUsername());
+		log.info("JWT token genreated for user:",user.getUsername());
+		return token;
 	}
 
 }
